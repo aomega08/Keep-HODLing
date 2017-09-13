@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="API Credentials"
+        android:key="preference_api_credentials">
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="preference_api_key"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="The GDAX API Key"
+            android:title="API Key" />
+
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="preference_api_secret"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="The GDAX API Secret"
+            android:title="API Secret"
+            android:inputType="textPassword" />
+
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="preference_api_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="The GDAX API Password"
+            android:title="API Password"
+            android:inputType="textPassword" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Currencies">
+        <ListPreference
+            android:key="preference_cryptocurrency"
+            android:title="What are you buying?"
+            android:summary="%s"
+            android:entries="@array/cryptocurrencies"
+            android:entryValues="@array/cryptocurrencies"
+            android:defaultValue="BTC" />
+        <ListPreference
+            android:key="preference_basecurrency"
+            android:title="How are you paying?"
+            android:summary="%s"
+            android:entries="@array/basecurrencies"
+            android:entryValues="@array/basecurrencies"
+            android:defaultValue="EUR" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Buying">
+        <ListPreference
+            android:key="preference_frequency"
+            android:title="How often do you want to buy?"
+            android:summary="%s"
+            android:entries="@array/frequencies"
+            android:entryValues="@array/frequencies_values"
+            android:defaultValue="daily" />
+        <EditTextPreference
+            android:key="preference_amount"
+            android:title="How much do you want to invest (per month)?"
+            android:summary="Insert value per month"
+            android:defaultValue="150" />
+    </PreferenceCategory>
+</PreferenceScreen>

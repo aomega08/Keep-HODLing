@@ -1,0 +1,67 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="I need setup!"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/configure_me_description"
+        android:id="@+id/configure_me_title"
+
+        android:textAlignment="center"
+        android:textSize="32dp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="To buy your CRYPTOs, I interact with GDAX APIs.\n\nTo make me work you must create a set of API credentials from the GDAX settings and set them in my settings.\n\nSince the credentials are long and random string, its easier to create them using your smartphone and using copy and paste."
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/configure_me_description"
+        app:layout_constraintBottom_toTopOf="@+id/goto_gdax_button"
+        android:id="@+id/configure_me_description"
+
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/goto_gdax_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/configure_me_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintRight_toLeftOf="@+id/open_settings_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:text="Go to GDAX" />
+
+    <Button
+        android:id="@+id/open_settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/configure_me_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintLeft_toRightOf="@+id/goto_gdax_button"
+        app:layout_constraintRight_toRightOf="parent"
+
+        android:text="Go to Settings" />
+</android.support.constraint.ConstraintLayout>

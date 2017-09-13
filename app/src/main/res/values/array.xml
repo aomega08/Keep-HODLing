@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cryptocurrencies">
+        <item>BTC</item>
+        <item>ETH</item>
+        <item>LTC</item>
+    </string-array>
+
+    <string-array name="basecurrencies">
+        <item>EUR</item>
+        <item>USD</item>
+        <item>GBP</item>
+    </string-array>
+
+    <string-array name="frequencies">
+        <item>Every hour</item>
+        <item>Every day</item>
+        <item>Every week (Monday)</item>
+        <item>Every month (1st)</item>
+    </string-array>
+
+    <string-array name="frequencies_values">
+        <item>hourly</item>
+        <item>daily</item>
+        <item>weekly</item>
+        <item>monthly</item>
+    </string-array>
+</resources>
