@@ -1,6 +1,5 @@
 package com.aomega08.keephodling;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

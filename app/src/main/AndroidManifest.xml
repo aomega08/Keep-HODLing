@@ -24,7 +24,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:process=":remote" android:debuggable="true" android:name=".BuyEvent" />
+        <receiver android:process=":remote" android:name=".BuyEvent" />
     </application>
-
 </manifest>

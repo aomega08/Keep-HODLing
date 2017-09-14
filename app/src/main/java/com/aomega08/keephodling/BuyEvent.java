@@ -1,6 +1,5 @@
 package com.aomega08.keephodling;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +12,7 @@ public class BuyEvent extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         notify(context);
+        new Persistence(context).setLastBuyTime(System.currentTimeMillis());
     }
 
     public void notify(Context context) {
@@ -25,7 +25,7 @@ public class BuyEvent extends BroadcastReceiver {
                                                     .setSmallIcon(android.R.drawable.ic_menu_call)
                                                     .setContentText("Spent " + spendAmount(context) + " " + p.getBaseCurrency());
 
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify((int) (Math.random() * 512), mBuilder.build());
     }
 
     public double spendAmount(Context context) {

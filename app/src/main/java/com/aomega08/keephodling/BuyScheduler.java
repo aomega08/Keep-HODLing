@@ -46,29 +46,48 @@ class BuyScheduler {
 
     private static long getFirstTrigger(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-
         String period = sharedPref.getString("preference_frequency", "");
-
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
 
-//        switch (period) {
-//            case "hourly":
-//                calendar.add(Calendar.HOUR, 1);
-//                break;
-//            case "daily":
-//            case "monthly":
-//                calendar.set(Calendar.HOUR, 12);
-//                break;
-//            case "weekly":
-//                calendar.set(Calendar.HOUR, 12);
-//                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
-//                    calendar.add(Calendar.DATE, 1);
-//                break;
-//        }
-//
-//        calendar.set(Calendar.MINUTE, 0);
-//        calendar.set(Calendar.SECOND, 0);
+        long lastBuyTime = new Persistence(context).getLastBuyTime();
+
+        if (lastBuyTime > 0) {
+            calendar.setTimeInMillis(lastBuyTime);
+            switch (period) {
+                case "hourly":
+                    calendar.add(Calendar.HOUR, 1);
+                    break;
+                case "daily":
+                    calendar.add(Calendar.DATE, 1);
+                    break;
+                case "monthly":
+                    calendar.add(Calendar.MONTH, 1);
+                    break;
+                case "weekly":
+                    calendar.add(Calendar.DATE, 7);
+                    break;
+            }
+        }
+        else {
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+
+            switch (period) {
+                case "hourly":
+                    calendar.add(Calendar.HOUR, 1);
+                    break;
+                case "daily":
+                case "monthly":
+                    calendar.set(Calendar.HOUR, 12);
+                    break;
+                case "weekly":
+                    calendar.set(Calendar.HOUR, 12);
+                    while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
+                        calendar.add(Calendar.DATE, 1);
+                    break;
+            }
+        }
 
         return calendar.getTimeInMillis();
     }
