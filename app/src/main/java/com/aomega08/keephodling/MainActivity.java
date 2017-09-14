@@ -5,21 +5,23 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        preferences = new Preferences(this.getApplicationContext());
         GdaxApi.init(this);
 
-        if (arePreferencesValid()) {
+        try {
+            BuyScheduler.setAlarm(getApplicationContext());
+        } catch (Exception exc) {
+        }
+
+        if (preferences.arePreferencesValid()) {
             getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new DashboardFragment())
                     .commit();
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment current = getFragmentManager().findFragmentById(android.R.id.content);
 
         if (current instanceof SettingsFragment) {
-            if (arePreferencesValid()) {
+            if (preferences.arePreferencesValid()) {
                 getFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new DashboardFragment())
                         .commit();
@@ -47,15 +49,5 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    boolean arePreferencesValid() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String apiKey = sharedPref.getString("preference_api_key", "");
-        String apiSecret = sharedPref.getString("preference_api_secret", "");
-        String apiPassword = sharedPref.getString("preference_api_password", "");
-
-        return !apiKey.equals("") && !apiSecret.equals("") && !apiPassword.equals("");
     }
 }

@@ -16,7 +16,7 @@
         <item>Every hour</item>
         <item>Every day</item>
         <item>Every week (Monday)</item>
-        <item>Every month (1st)</item>
+        <item>Every month (30.333 days)</item>
     </string-array>
 
     <string-array name="frequencies_values">
