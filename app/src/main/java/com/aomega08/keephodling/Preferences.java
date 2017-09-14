@@ -26,4 +26,12 @@ class Preferences {
     String getBaseCurrency() {
         return prefs.getString("preference_basecurrency", "");
     }
+
+    String getFrequency() {
+        return prefs.getString("preference_frequency", "");
+    }
+
+    double getAmount() {
+        return Double.parseDouble(prefs.getString("preference_amount", ""));
+    }
 }
