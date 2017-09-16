@@ -92,6 +92,8 @@ class GdaxApi {
 
     private void addSignatureHeaders(Map<String, String> headers, String method, String endpoint, String body) {
         String timestamp = "" + System.currentTimeMillis() / 1000;
+        if (body == null)
+            body = "";
         String toSign = timestamp + method + endpoint + body;
 
         headers.put("CB-ACCESS-TIMESTAMP", timestamp);

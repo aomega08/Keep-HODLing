@@ -3,6 +3,7 @@ package com.aomega08.keephodling;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -66,6 +67,32 @@ public class DashboardFragment extends GenericFragment {
 
     @Override
     public void onResume() {
+        refreshValues();
+
+        super.onResume();
+    }
+
+    String getAmountForCurrency(JsonNode balances, String currency, int decimalPlaces) {
+        for (JsonNode cur : balances) {
+            if (cur.get("currency").asText().equals(currency)) {
+                String balance = cur.get("balance").asText();
+                String[] parts = balance.split("\\.");
+                return parts[0] + "." + parts[1].substring(0, decimalPlaces);
+            }
+        }
+
+        return "---.--";
+    }
+
+    void updateValues() {
+        double effectiveValue = currentPriceDbl * ownedAmountDbl;
+
+        NumberFormat formatter = new DecimalFormat("#0.00");
+
+        ownedValue.setText(formatter.format(effectiveValue) + " " + preferences.getBaseCurrency());
+    }
+
+    private void refreshValues() {
         gdaxApi.get("/products/" + preferences.getCurrencyPair() + "/book", new GdaxApi.Listener() {
             @Override
             public void onSuccess(JsonNode response) {
@@ -107,27 +134,22 @@ public class DashboardFragment extends GenericFragment {
                 Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
-
-        super.onResume();
     }
 
-    String getAmountForCurrency(JsonNode balances, String currency, int decimalPlaces) {
-        for (JsonNode cur : balances) {
-            if (cur.get("currency").asText().equals(currency)) {
-                String balance = cur.get("balance").asText();
-                String[] parts = balance.split("\\.");
-                return parts[0] + "." + parts[1].substring(0, decimalPlaces);
-            }
+    @Override
+    int getMenu() {
+        return R.menu.dashboard_menu;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                refreshValues();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return "---.--";
-    }
-
-    void updateValues() {
-        double effectiveValue = currentPriceDbl * ownedAmountDbl;
-
-        NumberFormat formatter = new DecimalFormat("#0.00");
-
-        ownedValue.setText(formatter.format(effectiveValue) + " " + preferences.getBaseCurrency());
     }
 }

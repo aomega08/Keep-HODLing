@@ -16,7 +16,8 @@ public class GenericFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu, menu);
+        int menuResource = getMenu();
+        inflater.inflate(menuResource, menu);
     }
 
     @Override
@@ -35,5 +36,9 @@ public class GenericFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    int getMenu() {
+        return R.menu.menu;
     }
 }
