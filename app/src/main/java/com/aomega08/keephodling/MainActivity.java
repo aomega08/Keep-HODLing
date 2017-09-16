@@ -8,13 +8,14 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     Preferences preferences;
+    GdaxApi gdaxApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = new Preferences(this.getApplicationContext());
-        GdaxApi.init(this);
+        preferences = new Preferences(getApplicationContext());
+        gdaxApi = new GdaxApi(getApplicationContext());
 
         try {
             BuyScheduler.setAlarm(getApplicationContext());

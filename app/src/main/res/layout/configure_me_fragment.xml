@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="To buy your CRYPTOs, I interact with GDAX APIs.\n\nTo make me work you must create a set of API credentials from the GDAX settings and set them in my settings.\n\nSince the credentials are long and random string, its easier to create them using your smartphone and using copy and paste."
+        android:text="To buy your CRYPTOs, I interact with GDAX APIs.\n\nTo make me work you must create a set of API credentials from the GDAX settings and set them in my settings.\n\nSince the credentials are long and random string, its easier to create them using your smartphone and using copy and paste.\n\n\nFinally note that on GDAX you can trade GBP only with BTC, and will have to use EUR or USD to buy ETH or LTC."
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
 

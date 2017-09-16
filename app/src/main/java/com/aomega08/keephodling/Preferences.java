@@ -7,16 +7,25 @@ import android.preference.PreferenceManager;
 class Preferences {
     SharedPreferences prefs;
 
-    public Preferences(Context context) {
+    Preferences(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     boolean arePreferencesValid() {
-        String apiKey = prefs.getString("preference_api_key", "");
-        String apiSecret = prefs.getString("preference_api_secret", "");
-        String apiPassword = prefs.getString("preference_api_password", "");
+        return !getApiKey().equals("") && !getApiSecret().equals("") && !getApiPassword().equals("") &&
+                (!getBaseCurrency().equals("GBP") || getCryptoCurrency().equals("BTC"));
+    }
 
-        return !apiKey.equals("") && !apiSecret.equals("") && !apiPassword.equals("");
+    String getApiKey() {
+        return prefs.getString("preference_api_key", "");
+    }
+
+    String getApiSecret() {
+        return prefs.getString("preference_api_secret", "");
+    }
+
+    String getApiPassword() {
+        return prefs.getString("preference_api_password", "");
     }
 
     String getCryptoCurrency() {
@@ -27,11 +36,19 @@ class Preferences {
         return prefs.getString("preference_basecurrency", "");
     }
 
+    String getCurrencyPair() {
+        return getCryptoCurrency() + "-" + getBaseCurrency();
+    }
+
     String getFrequency() {
         return prefs.getString("preference_frequency", "");
     }
 
     double getAmount() {
         return Double.parseDouble(prefs.getString("preference_amount", ""));
+    }
+
+    boolean isSandboxEnabled() {
+        return prefs.getBoolean("preference_sandbox", false);
     }
 }

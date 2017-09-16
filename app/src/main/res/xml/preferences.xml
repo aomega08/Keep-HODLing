@@ -31,6 +31,15 @@
             android:summary="The GDAX API Password"
             android:title="API Password"
             android:inputType="textPassword" />
+
+        <CheckBoxPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:key="preference_sandbox"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Enable if you want to play with the app without spending money. You must use sandbox credentials and have a sandbox balance."
+            android:title="Use Sandbox environment" />
     </PreferenceCategory>
 
     <PreferenceCategory
