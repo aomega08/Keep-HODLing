@@ -44,23 +44,6 @@ public class DashboardFragment extends GenericFragment {
         ownedAmount = rootView.findViewById(R.id.owned_amount);
         ownedValue = rootView.findViewById(R.id.owned_value);
         ownedValueBase = rootView.findViewById(R.id.owned_value_base);
-        Button clickButton = (Button) rootView.findViewById(R.id.buy_button);
-        clickButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gdaxApi.buy(10.0, new GdaxApi.Listener() {
-                    @Override
-                    public void onSuccess(JsonNode response) {
-                        Log.i("BOUGHT", response.toString());
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
 
         return rootView;
     }

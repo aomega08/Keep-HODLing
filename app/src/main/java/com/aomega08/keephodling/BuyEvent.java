@@ -4,41 +4,71 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BuyEvent extends BroadcastReceiver {
     Persistence persistence;
     Preferences preferences;
+    GdaxApi gdaxApi;
+    NotificationManager notificationManager;
+    Context context;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         persistence = new Persistence(context);
         preferences = new Preferences(context);
+        gdaxApi = new GdaxApi(context);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.context = context;
 
         try {
             assertTimePassed();
 
-            notify(context);
+            gdaxApi.buy(spendAmount(), new GdaxApi.Listener() {
+                @Override
+                public void onSuccess(JsonNode response) {
+                    checkFill(response.get("id").asText());
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                }
+            });
+
             persistence.setLastBuyTime(System.currentTimeMillis());
         } catch (Exception e) {
             Log.e("BUY", e.getMessage());
         }
     }
 
-    public void notify(Context context) {
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Preferences p = new Preferences(context);
-
+    void sendNotification(String title, String content) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                                                    .setContentTitle("Bought some " + p.getCryptoCurrency())
+                                                    .setContentTitle(title)
                                                     .setSmallIcon(android.R.drawable.ic_menu_call)
-                                                    .setContentText("Spent " + spendAmount() + " " + p.getBaseCurrency());
+                                                    .setContentText(content);
 
-        mNotificationManager.notify((int) (Math.random() * 512), mBuilder.build());
+        notificationManager.notify((int) (Math.random() * 512), mBuilder.build());
+    }
+
+    void sendSuccessNotification(double spent, String bought) {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        String spentString = formatter.format(spent);
+
+        sendNotification("Bought " + bought + " " + preferences.getCryptoCurrency(), "Paid " + spentString + " " + preferences.getBaseCurrency());
+    }
+
+    void sendFailureNotification(String reason) {
+        sendNotification("Failed to buy " + preferences.getCryptoCurrency(), "Last order status: " + reason);
     }
 
     public double spendAmount() {
@@ -81,15 +111,46 @@ public class BuyEvent extends BroadcastReceiver {
                 diff = 3600 * 24 * 7 * 1000;
                 break;
             case "monthly":
-                diff = 3600 * 24 * 30 * 1000;
+                long secondsPerMonth = 3600 * 24 * 30;
+                diff = secondsPerMonth * 1000;
                 break;
             default:
                 throw new Exception("Invalid frequency");
         }
 
-        // Allow up to 5 minutes of drift
+        // Allow up to 5 minutes of alarm drift
         if (System.currentTimeMillis() - lastTime < diff - 5 * 60 * 1000) {
             throw new Exception("Assertion failed. Not enough time passed since last operation");
         }
+    }
+
+    private void checkFill(final String order_id) {
+        final Timer t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                gdaxApi.getOrder(order_id, new GdaxApi.Listener() {
+                    @Override
+                    public void onSuccess(JsonNode response) {
+                        if (response.get("status").asText().equals("done")) {
+                            t.cancel();
+                            t.purge();
+
+                            String reason = response.get("done_reason").asText();
+                            if (reason.equals("filled")) {
+                                sendSuccessNotification(response.get("specified_funds").asDouble(), response.get("filled_size").asText());
+                            } else {
+                                sendFailureNotification(reason);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+
+                    }
+                });
+            }
+        }, 200, 2000);
     }
 }

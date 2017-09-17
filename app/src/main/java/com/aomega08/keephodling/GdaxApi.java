@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.android.volley.NoConnectionError;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,6 +40,8 @@ class GdaxApi {
     }
 
     private void request(int intMethod, String stringMethod, String endpoint, boolean signed, final String body, Listener l) {
+        Log.i("REQUEST", stringMethod + " " + endpoint);
+
         final Map<String, String> headers = new HashMap<>();
         if (signed)
             addSignatureHeaders(headers, stringMethod, endpoint, body);
@@ -88,6 +91,18 @@ class GdaxApi {
         params.put("funds", "" + funds);
 
         post("/orders", true, params, l);
+    }
+
+    void getOrder(String order_id, Listener l) {
+        get("/orders/" + order_id, true, l);
+    }
+
+    void getFills(String order_id, Listener l) {
+        if (order_id != null) {
+            get("/fills?order_id=" + order_id, true, l);
+        } else {
+            get("/fills", true, l);
+        }
     }
 
     private void addSignatureHeaders(Map<String, String> headers, String method, String endpoint, String body) {
@@ -148,6 +163,7 @@ class GdaxApi {
         return new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.i("RESPONSE", response);
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     JsonNode json = mapper.readTree(response);
@@ -163,7 +179,9 @@ class GdaxApi {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
+                if (error instanceof NoConnectionError) {
+                    l.onFailure("Network is unreachable. Please check your internet connection.");
+                } else if (error.networkResponse.statusCode == 401 || error.networkResponse.statusCode == 403) {
                     l.onFailure("Invalid credentials or not enough permissions");
                 } else if (error.networkResponse.statusCode == 400) {
                     ObjectMapper mapper = new ObjectMapper();
