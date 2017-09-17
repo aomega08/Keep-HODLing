@@ -1,68 +1,83 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
+    <ToggleButton
         android:layout_height="wrap_content"
-        android:text="You own"
-        android:layout_marginTop="16dp"
-        android:textAlignment="center"
-        android:textSize="24sp" />
-
-    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/owned_amount"
-        android:text="--.-------- ---"
-        android:textAlignment="center"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:textColor="@color/money"/>
+        android:textOff="Enable autobuy"
+        android:textOn="Disable autobuy"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/toggle_colors"
+        android:textColor="#fff"
+        android:id="@+id/toggle_autobuy" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="worth"
-        android:textAlignment="center"
-        android:textSize="24sp" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/owned_value"
-        android:text="----.-- ---"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/money"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You own"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textSize="24sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:id="@+id/current_price"
-        android:text="--- price: ----.--"
-        android:textAlignment="center"
-        android:textSize="16sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/owned_amount"
+            android:text="--.-------- ---"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="@color/money"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="you also have"
-        android:textAlignment="center"
-        android:textSize="14sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="worth"
+            android:textAlignment="center"
+            android:textSize="24sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/owned_value_base"
-        android:text="----.-- ---"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/money"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/owned_value"
+            android:text="----.-- ---"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/money"/>
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/current_price"
+            android:text="--- price: ----.--"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="you also have"
+            android:textAlignment="center"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/owned_value_base"
+            android:text="----.-- ---"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/money"/>
+
+    </LinearLayout>
+</RelativeLayout>

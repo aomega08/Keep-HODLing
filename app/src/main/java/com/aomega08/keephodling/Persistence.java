@@ -19,4 +19,14 @@ class Persistence {
         editor.putLong("lastBuyTime", millis);
         editor.apply();
     }
+
+    boolean getAutobuyEnabled() {
+        return preferences.getBoolean("autobuy", false);
+    }
+
+    void setAutobuyEnabled(boolean value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("autobuy", value);
+        editor.apply();
+    }
 }

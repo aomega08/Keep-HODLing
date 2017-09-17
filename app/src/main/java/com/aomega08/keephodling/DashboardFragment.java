@@ -1,28 +1,28 @@
 package com.aomega08.keephodling;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Iterator;
 
 public class DashboardFragment extends GenericFragment {
     GdaxApi gdaxApi;
     Preferences preferences;
+    Persistence persistence;
     TextView currentPrice;
     TextView ownedAmount;
     TextView ownedValue;
     TextView ownedValueBase;
+    ToggleButton toggleAutobuy;
 
     double currentPriceDbl = 0.0;
     double ownedAmountDbl = 0.0;
@@ -31,7 +31,8 @@ public class DashboardFragment extends GenericFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = new Preferences((getActivity().getApplicationContext()));
+        preferences = new Preferences(getActivity().getApplicationContext());
+        persistence = new Persistence(getActivity().getApplicationContext());
         gdaxApi = new GdaxApi(getActivity().getApplicationContext());
     }
 
@@ -44,6 +45,21 @@ public class DashboardFragment extends GenericFragment {
         ownedAmount = rootView.findViewById(R.id.owned_amount);
         ownedValue = rootView.findViewById(R.id.owned_value);
         ownedValueBase = rootView.findViewById(R.id.owned_value_base);
+
+        toggleAutobuy = rootView.findViewById(R.id.toggle_autobuy);
+        toggleAutobuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                persistence.setAutobuyEnabled(toggleAutobuy.isChecked());
+                try {
+                    BuyScheduler.setAlarm(getActivity().getApplicationContext());
+                } catch (Exception e) {
+                    //
+                }
+            }
+        });
+
+        toggleAutobuy.setChecked(persistence.getAutobuyEnabled());
 
         return rootView;
     }

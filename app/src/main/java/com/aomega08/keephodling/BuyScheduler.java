@@ -16,7 +16,10 @@ class BuyScheduler {
             PendingIntent intent = getAlarmIntent(context);
 
             alarManager.cancel(intent);
-            alarManager.setRepeating(AlarmManager.RTC_WAKEUP, getFirstTrigger(context), getPeriod(context), intent);
+
+            if (new Persistence(context).getAutobuyEnabled()) {
+                alarManager.setRepeating(AlarmManager.RTC_WAKEUP, getFirstTrigger(context), getPeriod(context), intent);
+            }
         }
     }
 
