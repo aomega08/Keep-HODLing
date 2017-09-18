@@ -1,16 +1,17 @@
 package com.aomega08.keephodling;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -100,6 +101,8 @@ public class BuyEvent extends BroadcastReceiver {
     void sendSuccessNotification(double spent, String bought) {
         NumberFormat formatter = new DecimalFormat("#0.00");
         String spentString = formatter.format(spent);
+
+        trackBuy(bought, spentString);
 
         sendNotification("Bought " + bought + " " + preferences.getCryptoCurrency(), "Paid " + spentString + " " + preferences.getBaseCurrency(), -1);
     }
@@ -200,5 +203,20 @@ public class BuyEvent extends BroadcastReceiver {
         }
 
         return 0.0;
+    }
+
+    void trackBuy(String crypto, String base) {
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, preferences.getCryptoCurrency());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, crypto);
+
+        Bundle bundle2 = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, preferences.getBaseCurrency());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, base);
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, bundle);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, bundle2);
     }
 }
