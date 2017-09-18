@@ -81,9 +81,10 @@ public class DashboardFragment extends GenericFragment {
     String getAmountForCurrency(JsonNode balances, String currency, int decimalPlaces) {
         for (JsonNode cur : balances) {
             if (cur.get("currency").asText().equals(currency)) {
-                String balance = cur.get("balance").asText();
-                String[] parts = balance.split("\\.");
-                return parts[0] + "." + parts[1].substring(0, decimalPlaces);
+                double balance = Double.parseDouble(cur.get("balance").asText());
+                NumberFormat formatter = new DecimalFormat("#0.00");
+                formatter.setMinimumFractionDigits(decimalPlaces);
+                return formatter.format(balance);
             }
         }
 
@@ -123,12 +124,12 @@ public class DashboardFragment extends GenericFragment {
             @Override
             public void onSuccess(JsonNode response) {
                 String owned = getAmountForCurrency(response, preferences.getCryptoCurrency(), 8);
-                String ownedBase = getAmountForCurrency(response, preferences.getBaseCurrency(), 8);
+                String ownedBase = getAmountForCurrency(response, preferences.getBaseCurrency(), 2);
 
                 NumberFormat formatter = new DecimalFormat("#0.00");
 
                 ownedAmountDbl = Double.parseDouble(owned);
-                baseAmountDbl = Math.round(Double.parseDouble(ownedBase) * 100) / 100;
+                baseAmountDbl = Double.parseDouble(ownedBase);
                 ownedAmount.setText(owned + " " + preferences.getCryptoCurrency());
                 ownedValueBase.setText(formatter.format(baseAmountDbl) + " " + preferences.getBaseCurrency());
 
