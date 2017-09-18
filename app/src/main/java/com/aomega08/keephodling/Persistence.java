@@ -29,4 +29,28 @@ class Persistence {
         editor.putBoolean("autobuy", value);
         editor.apply();
     }
+
+    double getSpentAmount() {
+        return Double.parseDouble(preferences.getString("spentAmount", "0.0"));
+    }
+
+    void setSpentAmount(double amount) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("spentAmount", "" + amount);
+        editor.apply();
+    }
+
+    void addSpentAmount(double diff) {
+        setSpentAmount(getSpentAmount() + diff);
+    }
+
+    String getLastCumulatedFill() {
+        return preferences.getString("lastCumulatedFill", null);
+    }
+
+    void setLastCumulatedFill(String value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("lastCumulatedFill", value);
+        editor.apply();
+    }
 }

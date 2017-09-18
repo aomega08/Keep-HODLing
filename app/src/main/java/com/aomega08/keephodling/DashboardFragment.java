@@ -1,7 +1,9 @@
 package com.aomega08.keephodling;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class DashboardFragment extends GenericFragment {
+public class DashboardFragment extends GenericFragment implements FillCumulator.Listener {
     GdaxApi gdaxApi;
     Preferences preferences;
     Persistence persistence;
@@ -23,6 +25,7 @@ public class DashboardFragment extends GenericFragment {
     TextView ownedAmount;
     TextView ownedValue;
     TextView ownedValueBase;
+    TextView percentValue;
     ToggleButton toggleAutobuy;
 
     double currentPriceDbl = 0.0;
@@ -49,6 +52,7 @@ public class DashboardFragment extends GenericFragment {
         ownedAmount = rootView.findViewById(R.id.owned_amount);
         ownedValue = rootView.findViewById(R.id.owned_value);
         ownedValueBase = rootView.findViewById(R.id.owned_value_base);
+        percentValue = rootView.findViewById(R.id.percent_value);
 
         toggleAutobuy = rootView.findViewById(R.id.toggle_autobuy);
         toggleAutobuy.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +101,26 @@ public class DashboardFragment extends GenericFragment {
         NumberFormat formatter = new DecimalFormat("#0.00");
 
         ownedValue.setText(formatter.format(effectiveValue) + " " + preferences.getBaseCurrency());
+
+        if (effectiveValue > 0.0 && persistence.getSpentAmount() > 0.0) {
+            double spent = persistence.getSpentAmount();
+            double diff = effectiveValue - spent;
+            double percent = (diff / spent) * 100.0;
+
+            if (percent >= 0.01) {
+                percentValue.setText("▲ " + formatter.format(percent) + " %");
+                percentValue.setTextColor(getResources().getColor(R.color.money));
+            } else if (percent <= -0.01) {
+                percentValue.setText("▼ " + formatter.format(percent) + " %");
+                percentValue.setTextColor(getResources().getColor(R.color.red));
+            } else {
+                percentValue.setText("~ 0.00 %");
+                percentValue.setTextColor(getResources().getColor(android.R.color.tab_indicator_text));
+            }
+        } else {
+            percentValue.setText("~ 0.00 %");
+            percentValue.setTextColor(getResources().getColor(android.R.color.tab_indicator_text));
+        }
     }
 
     private void refreshValues() {
@@ -141,6 +165,8 @@ public class DashboardFragment extends GenericFragment {
                 Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
+
+        (new FillCumulator(getActivity().getApplicationContext())).run(this);
     }
 
     @Override
@@ -158,5 +184,10 @@ public class DashboardFragment extends GenericFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDone() {
+        updateValues();
     }
 }

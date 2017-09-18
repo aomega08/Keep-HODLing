@@ -97,12 +97,16 @@ class GdaxApi {
         get("/orders/" + order_id, true, l);
     }
 
-    void getFills(String order_id, Listener l) {
-        if (order_id != null) {
-            get("/fills?order_id=" + order_id, true, l);
-        } else {
-            get("/fills", true, l);
-        }
+    void getFills(String product_id, String before, String after, Listener l) {
+        String endpoint = "/fills?product_id=" + product_id;
+
+        if (before != null)
+            endpoint += "&before=" + before;
+
+        if (after != null)
+            endpoint += "&after=" + after;
+
+        get(endpoint, true, l);
     }
 
     private void addSignatureHeaders(Map<String, String> headers, String method, String endpoint, String body) {
