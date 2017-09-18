@@ -1,6 +1,7 @@
 package com.aomega08.keephodling;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +32,12 @@ public class DashboardFragment extends GenericFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         preferences = new Preferences(getActivity().getApplicationContext());
         persistence = new Persistence(getActivity().getApplicationContext());
         gdaxApi = new GdaxApi(getActivity().getApplicationContext());
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Keep HODLing");
     }
 
     @Override
@@ -67,6 +71,8 @@ public class DashboardFragment extends GenericFragment {
     @Override
     public void onResume() {
         refreshValues();
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Keep HODLing");
 
         super.onResume();
     }

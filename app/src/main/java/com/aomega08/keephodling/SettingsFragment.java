@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 
 public class SettingsFragment extends PreferenceFragment {
     @Override
@@ -28,5 +29,21 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Settings");
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Settings");
+        }
     }
 }

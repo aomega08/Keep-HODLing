@@ -30,6 +30,14 @@ public class GenericFragment extends Fragment {
 
                 return true;
 
+            case R.id.action_about:
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new AboutFragment())
+                        .addToBackStack(null)
+                        .commit();
+
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

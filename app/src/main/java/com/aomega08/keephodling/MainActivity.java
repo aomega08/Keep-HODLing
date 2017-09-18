@@ -1,11 +1,8 @@
 package com.aomega08.keephodling;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     Preferences preferences;
