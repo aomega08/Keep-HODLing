@@ -1,6 +1,8 @@
 package com.aomega08.keephodling;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -77,9 +79,16 @@ public class BuyEvent extends BroadcastReceiver {
     }
 
     void sendNotification(String title, String content, int id) {
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                     .setContentTitle(title)
                                                     .setSmallIcon(R.drawable.btc)
+                                                    .setContentIntent(intent)
+                                                    .setAutoCancel(true)
                                                     .setContentText(content);
 
         if (id < 0)
