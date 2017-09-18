@@ -4,9 +4,12 @@ import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class MainActivity extends AppCompatActivity {
     Preferences preferences;
     GdaxApi gdaxApi;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = new Preferences(getApplicationContext());
         gdaxApi = new GdaxApi(getApplicationContext());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         try {
             BuyScheduler.setAlarm(getApplicationContext());
