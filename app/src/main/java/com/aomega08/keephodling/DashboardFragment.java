@@ -71,6 +71,7 @@ public class DashboardFragment extends GenericFragment {
     @Override
     public void onResume() {
         refreshValues();
+        (new BuyEvent()).onReceive(getActivity().getApplicationContext(), null);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Keep HODLing");
 

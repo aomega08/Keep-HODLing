@@ -30,6 +30,11 @@ public class BuyEvent extends BroadcastReceiver {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.context = context;
 
+        // Ensure we can buy
+        if (!persistence.getAutobuyEnabled()) {
+            return;
+        }
+
         try {
             assertTimePassed();
 
@@ -54,7 +59,7 @@ public class BuyEvent extends BroadcastReceiver {
     void sendNotification(String title, String content) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                     .setContentTitle(title)
-                                                    .setSmallIcon(android.R.drawable.ic_menu_call)
+                                                    .setSmallIcon(R.drawable.btc)
                                                     .setContentText(content);
 
         notificationManager.notify((int) (Math.random() * 512), mBuilder.build());
