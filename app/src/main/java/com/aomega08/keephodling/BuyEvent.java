@@ -38,10 +38,16 @@ public class BuyEvent extends BroadcastReceiver {
         try {
             assertTimePassed();
 
-            gdaxApi.buy(spendAmount(), new GdaxApi.Listener() {
+            gdaxApi.getAccounts(new GdaxApi.Listener() {
                 @Override
                 public void onSuccess(JsonNode response) {
-                    checkFill(response.get("id").asText());
+                    double owned = getAmountForCurrency(response, preferences.getBaseCurrency());
+
+                    if (owned >= spendAmount()) {
+                        executeBuy();
+                    } else {
+                        sendNotification("Deposit needed!", "You run out of " + preferences.getBaseCurrency() + ". I cannot buy.", 3);
+                    }
                 }
 
                 @Override
@@ -56,24 +62,41 @@ public class BuyEvent extends BroadcastReceiver {
         }
     }
 
-    void sendNotification(String title, String content) {
+    void executeBuy() {
+        gdaxApi.buy(spendAmount(), new GdaxApi.Listener() {
+            @Override
+            public void onSuccess(JsonNode response) {
+                checkFill(response.get("id").asText());
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    void sendNotification(String title, String content, int id) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                     .setContentTitle(title)
                                                     .setSmallIcon(R.drawable.btc)
                                                     .setContentText(content);
 
-        notificationManager.notify((int) (Math.random() * 512), mBuilder.build());
+        if (id < 0)
+            id = (int) (Math.random() * 2048);
+
+        notificationManager.notify(id, mBuilder.build());
     }
 
     void sendSuccessNotification(double spent, String bought) {
         NumberFormat formatter = new DecimalFormat("#0.00");
         String spentString = formatter.format(spent);
 
-        sendNotification("Bought " + bought + " " + preferences.getCryptoCurrency(), "Paid " + spentString + " " + preferences.getBaseCurrency());
+        sendNotification("Bought " + bought + " " + preferences.getCryptoCurrency(), "Paid " + spentString + " " + preferences.getBaseCurrency(), -1);
     }
 
     void sendFailureNotification(String reason) {
-        sendNotification("Failed to buy " + preferences.getCryptoCurrency(), "Last order status: " + reason);
+        sendNotification("Failed to buy " + preferences.getCryptoCurrency(), "Last order status: " + reason, 1);
     }
 
     public double spendAmount() {
@@ -157,5 +180,16 @@ public class BuyEvent extends BroadcastReceiver {
                 });
             }
         }, 200, 2000);
+    }
+
+    private double getAmountForCurrency(JsonNode balances, String currency) {
+        for (JsonNode cur : balances) {
+            if (cur.get("currency").asText().equals(currency)) {
+                String balance = cur.get("balance").asText();
+                return Double.parseDouble(balance);
+            }
+        }
+
+        return 0.0;
     }
 }
