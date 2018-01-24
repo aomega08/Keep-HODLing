@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class BuyEvent extends BroadcastReceiver {
     Preferences preferences;
     GdaxApi gdaxApi;
     NotificationManager notificationManager;
+    PowerManager.WakeLock wakeLock;
     Context context;
 
     @Override
@@ -41,6 +43,11 @@ public class BuyEvent extends BroadcastReceiver {
         try {
             assertTimePassed();
 
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BuyBitcoinLock");
+            wakeLock.acquire();
+
             gdaxApi.getAccounts(new GdaxApi.Listener() {
                 @Override
                 public void onSuccess(JsonNode response) {
@@ -50,12 +57,14 @@ public class BuyEvent extends BroadcastReceiver {
                         executeBuy();
                     } else {
                         sendNotification("Deposit needed!", "You run out of " + preferences.getBaseCurrency() + ". I cannot buy.", 3);
+                        wakeLock.release();
                     }
                 }
 
                 @Override
                 public void onFailure(String message) {
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    wakeLock.release();
                 }
             });
 
@@ -70,11 +79,13 @@ public class BuyEvent extends BroadcastReceiver {
             @Override
             public void onSuccess(JsonNode response) {
                 checkFill(response.get("id").asText());
+                wakeLock.release();
             }
 
             @Override
             public void onFailure(String message) {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                wakeLock.release();
             }
         });
     }
